@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 
 public class MainActivity extends Activity {
@@ -32,4 +33,15 @@ public class MainActivity extends Activity {
         }
         return c;
     }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        // releareCamera()
+        if(mCamera != null){
+            mCamera.release();
+            mCamera = null;
+        }
+    }
+
 }

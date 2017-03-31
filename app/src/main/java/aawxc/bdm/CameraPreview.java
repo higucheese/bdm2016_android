@@ -14,11 +14,11 @@ import java.io.IOException;
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
-    private Camera cam;
+    private Camera mCamera;
 
     public CameraPreview(Context context, Camera camera) {
         super(context);
-        cam = camera;
+        mCamera = camera;
 
         mHolder = getHolder();
         mHolder.addCallback(this);
@@ -28,15 +28,19 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceCreated(SurfaceHolder holder) {
         // tell the camera where to draw the preview
         try {
-            cam.setPreviewDisplay(holder);
-            cam.startPreview();
+            mCamera.setPreviewDisplay(holder);
+            mCamera.startPreview();
         } catch (IOException e) {
             Log.d("surfaceCreated", "Error setting camerapreview:" + e.getMessage());
         }
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
-        // empty
+        if(mCamera != null){
+            mCamera.stopPreview();
+            mCamera.release();
+            mCamera = null;
+        }
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -50,15 +54,15 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         //stop preview before making changes
         try {
-            cam.stopPreview();
+            mCamera.stopPreview();
         } catch (Exception e) {
             //ignore: tried to stop a non-existent preview
         }
 
         // set preview size and make any resize, rotate or reformatting changes here
         try {
-            cam.setPreviewDisplay(mHolder);
-            cam.startPreview();
+            mCamera.setPreviewDisplay(mHolder);
+            mCamera.startPreview();
         } catch (Exception e) {
             Log.d("surfaceChanged", "Error starting camera preview: " + e.getMessage());
         }
