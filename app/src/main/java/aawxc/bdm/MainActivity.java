@@ -18,12 +18,10 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /*don't show navigation bar*/
+        //don't show navigation bar
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
             View decorView = this.getWindow().getDecorView();
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                View.SYSTEM_UI_FLAG_FULLSCREEN |
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            decorView.setSystemUiVisibility( View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
         setContentView(R.layout.activity_main);
     }
@@ -46,14 +44,5 @@ public class MainActivity extends Activity {
             Log.e("Camera.open()", "Error opening camera", e);
         }
         return c;
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-        if(mCamera != null){
-            mCamera.release();
-            mCamera = null;
-        }
     }
 }
