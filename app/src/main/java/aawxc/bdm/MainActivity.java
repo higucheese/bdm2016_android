@@ -1,22 +1,19 @@
 package aawxc.bdm;
 
 import android.app.Activity;
-import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
 public class MainActivity extends Activity {
-
-    private Camera mCamera;
     private CameraPreview mPreview;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v("hoge", "piyo");
 
         //don't show navigation bar
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
@@ -30,19 +27,8 @@ public class MainActivity extends Activity {
     public void onResume(){
         super.onResume();
 
-        mCamera = getCameraInstance();
-        mPreview = new CameraPreview(this, mCamera);
+        mPreview = new CameraPreview(this);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
-    }
-
-    public static Camera getCameraInstance() {
-        Camera c = null;
-        try {
-            c = Camera.open();
-        } catch (Exception e) {
-            Log.e("Camera.open()", "Error opening camera", e);
-        }
-        return c;
     }
 }

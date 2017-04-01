@@ -16,31 +16,36 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private SurfaceHolder mHolder;
     private Camera mCamera;
 
-    public CameraPreview(Context context, Camera camera) {
+    public CameraPreview(Context context) {
         super(context);
-        mCamera = camera;
 
+        // Surface Holderのコールバックを登録
         mHolder = getHolder();
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
+        mCamera = getCameraInstance();
         // tell the camera where to draw the preview
         try {
+            if(holder == null){
+                return;
+            }
             mCamera.setPreviewDisplay(holder);
-            mCamera.startPreview();
         } catch (IOException e) {
             Log.d("surfaceCreated", "Error setting camerapreview:" + e.getMessage());
         }
     }
 
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        if(mCamera != null){
-            mCamera.stopPreview();
-            //mCamera.release();
-            mCamera = null;
+    public static Camera getCameraInstance() {
+        Camera c = null;
+        try {
+            c = Camera.open(0);
+        } catch (Exception e) {
+            Log.e("Camera.open()", "Error opening camera", e);
         }
+        return c;
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -52,19 +57,19 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             return;
         }
 
-        //stop preview before making changes
-        try {
-            mCamera.stopPreview();
-        } catch (Exception e) {
-            //ignore: tried to stop a non-existent preview
-        }
-
         // set preview size and make any resize, rotate or reformatting changes here
         try {
-            mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
         } catch (Exception e) {
             Log.d("surfaceChanged", "Error starting camera preview: " + e.getMessage());
+        }
+    }
+
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        if(mCamera != null){
+            mCamera.stopPreview();
+            mCamera.release();
+            mCamera = null;
         }
     }
 }
