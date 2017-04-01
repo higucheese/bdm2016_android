@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     tools:context=".MainActivity">
     <!--
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -11,12 +12,24 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     -->
 
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="#000000" />
+
     <FrameLayout
         android:id="@+id/camera_preview"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="12">
 
     </FrameLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="#000000" />
 
 </LinearLayout>
