@@ -1,15 +1,21 @@
 package aawxc.bdm;
 
 import android.app.Activity;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorEvent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements SensorEventListener {
     private CameraPreview mPreview;
+    private SensorManager mSensorManager;
+    private TextView stateView;
+    private float sensorX;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,8 +29,10 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        TextView stateView = (TextView) findViewById(R.id.state_view);
-        stateView.setText("Hello");
+        // Get an instance of the SensorManager
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        stateView = (TextView) findViewById(R.id.state_view);
     }
 
     @Override
@@ -34,5 +42,32 @@ public class MainActivity extends Activity {
         mPreview = new CameraPreview(this);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
+
+        // Listenerの登録
+        Sensor accel = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mSensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        //Listenerを解除
+        mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event){
+        if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
+            sensorX = event.values[0];
+
+            String strTmp = "加速度センサー\n"
+                    + " X: " + sensorX + "\n";
+            stateView.setText(strTmp);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy){
+
     }
 }
