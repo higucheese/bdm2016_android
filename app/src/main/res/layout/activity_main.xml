@@ -14,7 +14,6 @@
         android:background="@color/colorBackGround" />
 
     <FrameLayout
-        android:id="@+id/camera_preview"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="12">
@@ -22,9 +21,13 @@
         <FrameLayout
             android:id="@+id/opengl_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"/>
 
-        </FrameLayout>
+        <FrameLayout
+            android:id="@+id/camera_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </FrameLayout>
 
     <TextView
