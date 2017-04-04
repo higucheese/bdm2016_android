@@ -11,11 +11,15 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements SensorEventListener {
+public class MainActivity extends Activity implements SensorEventListener{
+
     private CameraPreview mPreview;
     private SensorManager mSensorManager;
     private TextView stateView;
-    private float sensorX;
+
+    private float axisX;
+    private float axisY;
+    private float axisZ;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +48,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         preview.addView(mPreview);
 
         // Listenerの登録
-        Sensor accel = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        Sensor accel = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         mSensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
@@ -57,13 +61,19 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event){
-        if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
-            sensorX = event.values[0];
+        String tmpStr = "state_view\n";
 
-            String strTmp = "加速度センサー\n"
-                    + " X: " + sensorX + "\n";
-            stateView.setText(strTmp);
+        if(event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR){
+            axisX = event.values[0];
+            axisY = event.values[1];
+            axisZ = event.values[2];
+            tmpStr += "回転ベクトルセンサー\n";
+            tmpStr += " X: " + axisX + "\n";
+            tmpStr += " Y: " + axisY + "\n";
+            tmpStr += " Z: " + axisZ + "\n";
         }
+
+        stateView.setText(tmpStr);
     }
 
     @Override
