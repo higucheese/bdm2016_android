@@ -32,6 +32,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private  float[] cMatrix=new float[16]; //カメラビュー変換マトリックス
 
     private Axis MyAxes= new Axis();  //原点周囲の軸表示とためのオブジェクトを作成
+    private Cube MyCube = new Cube(); //原点に，外接球半径１の立方体オブジェクトを作成
 
     //シェーダのattribute属性の変数に値を設定していないと暴走するのでそのための準備
     private static float[] DummyFloat= new float[1];
@@ -114,7 +115,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         Matrix.setLookAtM(cMatrix, 0,
                 0.0f, 0.0f, 10.0f,
                 (float) (viewlength * Math.sin(rotValue[0])),  //カメラの視点 x
-                (float) (viewlength * Math.sin(-rotValue[1])),                    //カメラの視点 y
+                (float) (viewlength * Math.sin(-rotValue[1])),  //カメラの視点 y
                 viewlength,  //カメラの視点 z
                 0.0f, 1.0f, 0.0f);
         //カメラビュー変換はこれで終わり。
@@ -126,11 +127,15 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         //座標軸の描画
         GLES.disableShading(); //シェーディング機能は使わない
         Matrix.setIdentityM(mMatrix, 0);//モデル変換行列mMatrixを単位行列にする。
+        Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[0]), 0, 1, 0);
+        Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[1]), 1, 0, 0);
         GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
         //座標軸の描画本体
         //引数 r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる), linewidth
         //shininessは使用していない
         MyAxes.draw(1f, 1f, 1f, 1f, 10.f, 2f);//座標軸の描画本体
+        // r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる)
+        MyCube.draw(0f, 1f, 0f, 1f, 20.f);
         GLES.enableShading(); //シェーディング機能を使う設定に戻す
     }
 
