@@ -20,7 +20,7 @@ public class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.On
         mContext = context;
         setEGLContextClientVersion(2);
         setZOrderOnTop(true);
-        setEGLConfigChooser(8, 8, 8, 8, 0, 0);
+        setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         this.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         renderer = new GLRenderer(context);
         setRenderer(renderer);

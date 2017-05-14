@@ -17,10 +17,11 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private boolean validProgram=false; //シェーダプログラムが有効
 
     private float aspect;//アスペクト比
-    private float viewlength = 5.0f; //視点距離
+    private static float viewlength = 5.0f; //視点距離
 
     //視点変更テスト変数
     private float alph=0f,beta=0f;
+    private static float[] rotValue = {0.0f, 0.0f, 0.0f};
 
     //光源の座標　x,y,z
     private  float[] LightPos={0f,1.5f,3f,1f};//x,y,z,1
@@ -68,7 +69,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         GLES20.glUniform4f(GLES.lightDiffuseHandle, 0.5f, 0.5f, 0.5f, 1.0f); //乱反射光
         GLES20.glUniform4f(GLES.lightSpecularHandle, 0.9f, 0.9f, 0.9f, 1.0f); //鏡面反射光
 
-        //背景色の設定
+        //背景色の設定(透過のためにコメントアウト)
         //GLES20.glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
 
         // 背景とのブレンド方法を設定します。
@@ -111,11 +112,11 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         //カメラビュー変換（視野変換）-----------------------------------
         //カメラ視点が原点になるような変換
         Matrix.setLookAtM(cMatrix, 0,
-                (float) (viewlength * Math.sin(beta) * Math.cos(alph)),  //カメラの視点 x
-                (float) (viewlength * Math.sin(alph)),                    //カメラの視点 y
-                (float) (viewlength * Math.cos(beta) * Math.cos(alph)),  //カメラの視点 z
-                0.0f, 0.0f, 0.0f, //カメラの視線方向の代表点
-                0.0f, 1.0f, 0.0f);//カメラの上方向
+                0.0f, 0.0f, 10.0f,
+                (float) (viewlength * Math.sin(rotValue[0])),  //カメラの視点 x
+                (float) (viewlength * Math.sin(-rotValue[1])),                    //カメラの視点 y
+                viewlength,  //カメラの視点 z
+                0.0f, 1.0f, 0.0f);
         //カメラビュー変換はこれで終わり。
         GLES.setCMatrix(cMatrix);
 
@@ -144,4 +145,12 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         alph=Scroll[1];
         beta=Scroll[0];
     }
+
+    private static final float PROPOTIONAL_VALUE = 0.5f;
+    public static void setRotationValue(float yaw, float pitch, float roll){
+        rotValue[0] = yaw * PROPOTIONAL_VALUE;
+        rotValue[1] = pitch * PROPOTIONAL_VALUE;
+        rotValue[2] = roll * PROPOTIONAL_VALUE;
+    }
+
 }

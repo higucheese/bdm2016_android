@@ -21,6 +21,8 @@ public class MainActivity extends Activity implements SensorEventListener{
 
     private CameraPreview mPreview;
     private SensorManager mSensorManager;
+    private final float[] mRotationMatrix = new float[16];
+    private final float[] mOrientation = new float[9];
     private TextView stateView;
 
     private Context mContext;
@@ -61,27 +63,27 @@ public class MainActivity extends Activity implements SensorEventListener{
         mMyGLSurfaceView = new MyGLSurfaceView(mContext);
         FrameLayout glsurfaceview = (FrameLayout) findViewById(R.id.opengl_view);
         glsurfaceview.addView(mMyGLSurfaceView);
-        mGestureDetector = new GestureDetector(this, (GestureDetector.OnGestureListener)mMyGLSurfaceView);
+        mMyGLSurfaceView.onResume();
 
+        mGestureDetector = new GestureDetector(this, (GestureDetector.OnGestureListener)mMyGLSurfaceView);
 
         mPreview = new CameraPreview(this);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
 
-        // Listenerの登録
         Sensor accel = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         mSensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_NORMAL);
 
-        mMyGLSurfaceView.onResume();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        //Listenerを解除
-        mSensorManager.unregisterListener(this);
 
         mMyGLSurfaceView.onPause();
+
+        mSensorManager.unregisterListener(this);
+
     }
 
     @Override
@@ -89,16 +91,20 @@ public class MainActivity extends Activity implements SensorEventListener{
         String tmpStr = "state_view\n";
 
         if(event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR){
-            axisX = event.values[0];
-            axisY = event.values[1];
-            axisZ = event.values[2];
-            tmpStr += "回転ベクトルセンサー\n";
-            tmpStr += " X: " + axisX + "\n";
-            tmpStr += " Y: " + axisY + "\n";
-            tmpStr += " Z: " + axisZ + "\n";
+            SensorManager.getRotationMatrixFromVector(mRotationMatrix, event.values);
+            SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X,
+                    SensorManager.AXIS_Z, mRotationMatrix);
+            SensorManager.getOrientation(mRotationMatrix, mOrientation);
+            tmpStr += "Orientation\n";
+            tmpStr += " mOrientation[0]: " + mOrientation[0] + "\n";
+            tmpStr += " mOrientation[1]: " + mOrientation[1] + "\n";
+            tmpStr += " mOrientation[2]: " + mOrientation[2] + "\n";
         }
 
+        GLRenderer.setRotationValue(mOrientation[0], mOrientation[1], mOrientation[2]);
+
         stateView.setText(tmpStr);
+
     }
 
     @Override
