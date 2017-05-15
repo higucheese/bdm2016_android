@@ -20,7 +20,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private static float viewlength = 5.0f; //視点距離
 
     //視点変更テスト変数
-    private float alph=0f,beta=0f;
+    //private float alph=0f,beta=0f;
     private static float[] rotValue = {0.0f, 0.0f, 0.0f};
 
     //光源の座標　x,y,z
@@ -139,6 +139,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         GLES.enableShading(); //シェーディング機能を使う設定に戻す
     }
 
+    /*
     private float Scroll[] = {0f, 0f}; //１本指のドラッグ[rad]
     public void setScrollValue(float DeltaX, float DeltaY) {
         Scroll[0] += DeltaX * 0.01;
@@ -149,7 +150,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         if (Scroll[1]<-1.57) Scroll[1]=-1.57f;
         alph=Scroll[1];
         beta=Scroll[0];
-    }
+    }*/
 
     private static final float PROPOTIONAL_VALUE = 0.5f;
     public static void setRotationValue(float yaw, float pitch, float roll){

@@ -33,7 +33,7 @@ public class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.On
 
     @Override
     public boolean onScroll(MotionEvent event1, MotionEvent event2, float distx, float disty) {
-        renderer.setScrollValue(distx, disty);
+        //renderer.setScrollValue(distx, disty);
         return true;
     }
 
