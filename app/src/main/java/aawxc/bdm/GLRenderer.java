@@ -17,13 +17,13 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private boolean validProgram=false; //シェーダプログラムが有効
 
     private float aspect;//アスペクト比
-    private static float viewlength = 5.0f; //視点距離
-    private static float scalex = 2.0f;
-    private static float scaley = 1.0f;
-    private static float scalez = 1.0f;
+    private static final float viewlength = 5.0f; //視点距離
+    private static final float scale_x = 2.0f;
+    private static final float scale_y = 1.0f;
+    private static final float scale_z = 1.0f;
+    private static final float PROPOTION_VALUE = 0.5f;
 
     //視点変更テスト変数
-    //private float alph=0f,beta=0f;
     private static float[] rotValue = {0.0f, 0.0f, 0.0f};
 
     //光源の座標　x,y,z
@@ -139,7 +139,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         //座標軸の描画
         GLES.disableShading(); //シェーディング機能は使わない
         Matrix.setIdentityM(mMatrix, 0);//モデル変換行列mMatrixを単位行列にする。
-        Matrix.scaleM(mMatrix, 0, scalex, scaley, scalez);
+        Matrix.scaleM(mMatrix, 0, scale_x, scale_y, scale_z);
         Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[0]), 0, 1, 0);
         Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[1]), 1, 0, 0);
         GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
@@ -158,24 +158,10 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         GLES.disableTexture();
     }
 
-    /*
-    private float Scroll[] = {0f, 0f}; //１本指のドラッグ[rad]
-    public void setScrollValue(float DeltaX, float DeltaY) {
-        Scroll[0] += DeltaX * 0.01;
-        if (3.14f<Scroll[0]) Scroll[0]=3.14f;
-        if (Scroll[0]<-3.14) Scroll[0]=-3.14f;
-        Scroll[1] -= DeltaY * 0.01;
-        if (1.57f<Scroll[1]) Scroll[1]=1.57f;
-        if (Scroll[1]<-1.57) Scroll[1]=-1.57f;
-        alph=Scroll[1];
-        beta=Scroll[0];
-    }*/
-
-    private static final float PROPOTIONAL_VALUE = 0.5f;
     public static void setRotationValue(float yaw, float pitch, float roll){
-        rotValue[0] = yaw * PROPOTIONAL_VALUE;
-        rotValue[1] = pitch * PROPOTIONAL_VALUE;
-        rotValue[2] = roll * PROPOTIONAL_VALUE;
+        rotValue[0] = yaw * PROPOTION_VALUE;
+        rotValue[1] = pitch * PROPOTION_VALUE;
+        rotValue[2] = roll * PROPOTION_VALUE;
     }
 
 }

@@ -29,10 +29,6 @@ public class MainActivity extends Activity implements SensorEventListener{
 
     private Context mContext;
 
-    private float axisX;
-    private float axisY;
-    private float axisZ;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,13 +93,9 @@ public class MainActivity extends Activity implements SensorEventListener{
             SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X,
                     SensorManager.AXIS_Z, mRotationMatrix);
             SensorManager.getOrientation(mRotationMatrix, mOrientation);
-            tmpStr += "Orientation\n";
-            tmpStr += " mOrientation[0]: " + mOrientation[0] + "\n";
-            tmpStr += " mOrientation[1]: " + mOrientation[1] + "\n";
-            tmpStr += " mOrientation[2]: " + mOrientation[2] + "\n";
-            yaw = (float) (yaw * alpha + mOrientation[0] * (1.0f - alpha));
-            pitch = (float) (pitch * alpha + mOrientation[1] * (1.0f - alpha));
-            roll = (float) (roll * alpha + mOrientation[2] * (1.0f - alpha));
+            yaw = yaw * alpha + mOrientation[0] * (1.0f - alpha);
+            pitch = pitch * alpha + mOrientation[1] * (1.0f - alpha);
+            roll = roll * alpha + mOrientation[2] * (1.0f - alpha);
             tmpStr += "Position\n";
             tmpStr += "yaw: " + yaw + "\n";
             tmpStr += "pitch: " + pitch + "\n";
