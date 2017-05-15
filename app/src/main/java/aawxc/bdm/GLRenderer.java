@@ -32,7 +32,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private  float[] cMatrix=new float[16]; //カメラビュー変換マトリックス
 
     private Axis MyAxes= new Axis();  //原点周囲の軸表示とためのオブジェクトを作成
-    private Cube MyCube = new Cube(); //原点に，外接球半径１の立方体オブジェクトを作成
+    private TexCube MyTexCube = new TexCube(); //原点に，外接球半径１の立方体オブジェクトを作成
+    private Texture WoodenBox;
 
     //シェーダのattribute属性の変数に値を設定していないと暴走するのでそのための準備
     private static float[] DummyFloat= new float[1];
@@ -51,6 +52,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         //頂点配列の有効化
         GLES20.glEnableVertexAttribArray(GLES.positionHandle);
         GLES20.glEnableVertexAttribArray(GLES.normalHandle);
+        GLES20.glEnableVertexAttribArray(GLES.texcoordHandle);
 
         //デプスバッファの有効化
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
@@ -73,9 +75,14 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         //背景色の設定(透過のためにコメントアウト)
         //GLES20.glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
 
+        //テクスチャの有効化
+        GLES20.glEnable(GLES20.GL_TEXTURE_2D);
+
         // 背景とのブレンド方法を設定します。
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);    // 単純なアルファブレンド
+
+        WoodenBox = new Texture(mContext,R.drawable.woodenbox); //テクスチャを作成
     }
 
     //画面サイズ変更時に呼ばれる
@@ -93,7 +100,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         //シェーダのattribute属性の変数に値を設定していないと暴走するのでここでセットしておく。この位置でないといけない
         GLES20.glVertexAttribPointer(GLES.positionHandle, 3, GLES20.GL_FLOAT, false, 0, DummyBuffer);
         GLES20.glVertexAttribPointer(GLES.normalHandle, 3, GLES20.GL_FLOAT, false, 0, DummyBuffer);
+        GLES20.glVertexAttribPointer(GLES.texcoordHandle, 3, GLES20.GL_FLOAT, false, 0, DummyBuffer);
 
+        GLES.disableTexture();  //テクスチャ機能を無効にする。（デフォルト
         GLES.enableShading();   //シェーディング機能を有効にする。（デフォルト）
 
         //画面のクリア
@@ -135,8 +144,16 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         //shininessは使用していない
         MyAxes.draw(1f, 1f, 1f, 1f, 10.f, 2f);//座標軸の描画本体
         // r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる)
-        MyCube.draw(0f, 1f, 0f, 1f, 20.f);
+        //MyCube.draw(0f, 1f, 0f, 1f, 20.f);
         GLES.enableShading(); //シェーディング機能を使う設定に戻す
+
+        GLES.enableTexture();
+
+        WoodenBox.setTexture();
+        // r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる)
+        MyTexCube.draw(0f, 1f, 0f, 1f, 20.f);
+
+        GLES.disableTexture();
     }
 
     /*

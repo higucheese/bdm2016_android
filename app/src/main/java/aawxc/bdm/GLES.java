@@ -4,14 +4,14 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.util.Log;
 
-
 //シェーダ操作
 public class GLES {
-
     //頂点シェーダのコード
     private final static String VERTEX_CODE=
             //shadingを使用するflag 1の時使用する，0の時使用しない（単色にする）
-            "uniform int u_EnableShading;"+
+            "uniform highp int u_EnableShading;"+
+                    //textureを使用する：1  使用しない：0
+                    "uniform highp int u_EnableTexture;"+
                     //shadingを使用しない時の色の設定（単色）
                     "uniform vec4 u_ObjectColor;"+
 
@@ -33,12 +33,16 @@ public class GLES {
 
                     //頂点情報
                     "attribute vec4 a_Position;"+  //位置
-                    "attribute vec3 a_Normal;"+     //法線ベクトル
+                    "attribute vec3 a_Normal;"+     //法線
+
+                    // テクスチャ情報
+                    "attribute vec2 a_Texcoord;" + //テクスチャ
 
                     //出力
                     "varying vec4 v_Color;"+ "" +
+                    "varying vec2 v_Texcoord;" +
 
-                    "void main(){"+
+                    "void main() {"+
                     "if (u_EnableShading==1) {"+
                     //環境光の計算
                     "vec4 ambient=u_LightAmbient*u_MaterialAmbient;"+
@@ -67,26 +71,44 @@ public class GLES {
 
                     //位置の指定
                     "gl_Position=u_PMMatrix*a_Position;"+
+                    "if (u_EnableTexture==1) {"+
+                    //テクスチャの指定
+                    "v_Texcoord = a_Texcoord;" +
+                    "}"+
                     "}";
 
     //フラグメントシェーダのコード
     private final static String FRAGMENT_CODE=
             "precision mediump float;"+
+                    //textureを使用する：1  使用しない：0
+                    "uniform highp int u_EnableShading;"+
+                    //textureを使用するflag 1の時使用する，0の時使用しない（単色にする）
+                    "uniform highp int u_EnableTexture;"+
+                    "uniform sampler2D u_Texture;" +
+                    "varying vec2 v_Texcoord;" +
                     "varying vec4 v_Color;"+
-                    "void main(){"+
+                    "void main() {"+
+                    "if (u_EnableTexture==1) {"+
+                    "if (u_EnableShading==1) {"+
+                    "gl_FragColor = v_Color*texture2D(u_Texture, v_Texcoord);"+
+                    "} else {"+
+                    "gl_FragColor = texture2D(u_Texture, v_Texcoord);"+
+                    "}"+
+                    "} else {"+
                     "gl_FragColor=v_Color;"+
+                    "}"+
                     "}";
 
     //システム
     public static int enableShadingHandle; //shadingを行うflagのハンドル
     public static int objectColorHandle;   //shadingを行わない時に使う単色ハンドル
+    public static int enableTextureHandle; //Textureを使うflagのハンドル
 
     //光源のハンドル
     public static int lightAmbientHandle; //光源の環境光色ハンドル
     public static int lightDiffuseHandle; //光源の拡散光色ハンドル
     public static int lightSpecularHandle;//光源の鏡面光色ハンドル
     public static int lightPosHandle;     //光源の位置ハンドル
-
 
     //マテリアルのハンドル
     public static int materialAmbientHandle;  //マテリアルの環境光色ハンドル
@@ -102,11 +124,15 @@ public class GLES {
     public static int positionHandle;//位置ハンドル
     public static int normalHandle;  //法線ハンドル
 
+    //テクスチャのハンドル
+    public static int texcoordHandle; //テクスチャコードハンドル
+    public static int textureHandle;  //テクスチャハンドル
+
     //行列
-    public static float[] cMatrix=new float[16];//カメラビュー変換行列
-    public static float[] mvMatrix=new float[16];//モデルビュー変換行列
-    public static float[] pMatrix=new float[16];//プロジェクション行列（射影行列）
-    public static float[] pmMatrix=new float[16];//pMatrix*mvMatrix
+    public static float[] cMatrix=new float[16];//視点変換直後のモデルビュー行列
+    public static float[] mvMatrix=new float[16];//モデルビュー行列
+    public static float[] pMatrix=new float[16];//射影行列
+    public static float[] pmMatrix=new float[16];//射影行列 pMatrix*mvMatrix
 
     //光源
     private static float[] LightPos = new float[4];    //光源の座標　x,y,z　（ワールド座標）
@@ -138,6 +164,8 @@ public class GLES {
 
         //shading可否ハンドルの取得
         enableShadingHandle=GLES20.glGetUniformLocation(myProgram,"u_EnableShading");
+        //texture可否ハンドルの取得
+        enableTextureHandle=GLES20.glGetUniformLocation(myProgram,"u_EnableTexture");
 
         //光源のハンドルの取得
         lightAmbientHandle=GLES20.glGetUniformLocation(myProgram,"u_LightAmbient");
@@ -154,16 +182,21 @@ public class GLES {
         objectColorHandle=GLES20.glGetUniformLocation(myProgram,"u_ObjectColor");
 
         //行列のハンドルの取得
-        mMatrixHandle=GLES20.glGetUniformLocation(myProgram,"u_MMatrix");
+        mMatrixHandle=GLES20.glGetUniformLocation(myProgram, "u_MMatrix");
         pmMatrixHandle = GLES20.glGetUniformLocation(myProgram, "u_PMMatrix");
 
         //頂点とその法線ベクトルのハンドルの取得
         positionHandle=GLES20.glGetAttribLocation(myProgram, "a_Position");
         normalHandle=GLES20.glGetAttribLocation(myProgram, "a_Normal");
 
+        //テクスチャのハンドルの取得
+        texcoordHandle=GLES20.glGetAttribLocation(myProgram, "a_Texcoord");
+        textureHandle=GLES20.glGetUniformLocation(myProgram, "u_Texture");
+
         //プログラムオブジェクトの利用開始
         GLES20.glUseProgram(myProgram);
         enableShading();
+        disableTexture();
 
         return true;
     }
@@ -177,7 +210,7 @@ public class GLES {
         int[] compiled = new int[1];
         GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
         if (compiled[0] == 0) {
-            Log.e(" loadShader", "Failed in Compilation");
+            Log.e(" loadShader","Failed in Compilation");
             Log.e(" loadShader", GLES20.glGetShaderInfoLog(shader));
             return -1;
         }
@@ -206,21 +239,21 @@ public class GLES {
         System.arraycopy(lp, 0, LightPos, 0, 4);
     }
 
-    //プロジェクション行列（射影行列）を受け取る
+    //射影行列をシェーダに指定
     public static void setPMatrix(float[] pm) {
         System.arraycopy(pm, 0, pMatrix, 0, 16);
     }
 
-    //カメラビュー変換行列を受け取る
+    //カメラ視点変換行列を登録
     public static void setCMatrix(float[] cm) {
         System.arraycopy(cm, 0, cMatrix, 0, 16);
     }
 
-    //カメラビュー変換行列×モデル変換行列 = モデルビュー行列をシェーダに指定
+    //モデルビュー変換行列 ＝ （カメラのビュー変換行列 × モデル変換行列） をシェーダに指定
     public static void updateMatrix(float[] mm) {
         Matrix.multiplyMM(mvMatrix, 0, cMatrix, 0, mm, 0);       //mvMatrix = cMatrix * mm
         Matrix.multiplyMM(pmMatrix, 0, pMatrix, 0, mvMatrix, 0); //pmMatrix = pMatrix * mvMatrix
-        //モデルビュー行列をシェーダに指定
+        //モデルビュー変換行列をシェーダに指定
         GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, mvMatrix, 0);
 
         //プロジェクション行列（射影行列）×モデルビュー行列をシェーダに指定
@@ -244,7 +277,13 @@ public class GLES {
         GLES20.glUniform1i(enableShadingHandle, 1);
     }
     public static void disableShading() {
-        GLES20.glUniform1i(enableShadingHandle, 0);
+        GLES20.glUniform1i(enableShadingHandle,0);
     }
 
+    public static void enableTexture() {
+        GLES20.glUniform1i(enableTextureHandle, 1);
+    }
+    public static void disableTexture() {
+        GLES20.glUniform1i(enableTextureHandle,0);
+    }
 }
