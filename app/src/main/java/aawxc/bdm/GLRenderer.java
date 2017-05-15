@@ -18,6 +18,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     private float aspect;//アスペクト比
     private static float viewlength = 5.0f; //視点距離
+    private static float scalex = 2.0f;
+    private static float scaley = 1.0f;
+    private static float scalez = 1.0f;
 
     //視点変更テスト変数
     //private float alph=0f,beta=0f;
@@ -136,6 +139,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         //座標軸の描画
         GLES.disableShading(); //シェーディング機能は使わない
         Matrix.setIdentityM(mMatrix, 0);//モデル変換行列mMatrixを単位行列にする。
+        Matrix.scaleM(mMatrix, 0, scalex, scaley, scalez);
         Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[0]), 0, 1, 0);
         Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[1]), 1, 0, 0);
         GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
@@ -143,8 +147,6 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         //引数 r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる), linewidth
         //shininessは使用していない
         MyAxes.draw(1f, 1f, 1f, 1f, 10.f, 2f);//座標軸の描画本体
-        // r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる)
-        //MyCube.draw(0f, 1f, 0f, 1f, 20.f);
         GLES.enableShading(); //シェーディング機能を使う設定に戻す
 
         GLES.enableTexture();

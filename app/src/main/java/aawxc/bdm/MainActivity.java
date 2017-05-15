@@ -23,6 +23,8 @@ public class MainActivity extends Activity implements SensorEventListener{
     private SensorManager mSensorManager;
     private final float[] mRotationMatrix = new float[16];
     private final float[] mOrientation = new float[9];
+    private float yaw = 0f, pitch = 0f, roll = 0f;
+    private final float alpha = 0.9f;
     private TextView stateView;
 
     private Context mContext;
@@ -99,9 +101,16 @@ public class MainActivity extends Activity implements SensorEventListener{
             tmpStr += " mOrientation[0]: " + mOrientation[0] + "\n";
             tmpStr += " mOrientation[1]: " + mOrientation[1] + "\n";
             tmpStr += " mOrientation[2]: " + mOrientation[2] + "\n";
+            yaw = (float) (yaw * alpha + mOrientation[0] * (1.0f - alpha));
+            pitch = (float) (pitch * alpha + mOrientation[1] * (1.0f - alpha));
+            roll = (float) (roll * alpha + mOrientation[2] * (1.0f - alpha));
+            tmpStr += "Position\n";
+            tmpStr += "yaw: " + yaw + "\n";
+            tmpStr += "pitch: " + pitch + "\n";
+            tmpStr += "roll: " + roll + "\n";
         }
 
-        GLRenderer.setRotationValue(mOrientation[0], mOrientation[1], mOrientation[2]);
+        GLRenderer.setRotationValue(yaw, pitch, roll);
 
         stateView.setText(tmpStr);
 

@@ -43,6 +43,7 @@ public class TexCube {
             1f,1f,-1f,//P22
             -1f,1f,-1f//P23
     };
+
     //頂点座標番号列
     private byte[] indexs= {
             0,1,2,3, 4,5,6,7,
@@ -78,7 +79,7 @@ public class TexCube {
             0,0,-1  //P23
     };
 
-    float textcoords[] = {
+    private float texcoords[] = {
             1f,0f, //face 0
             0f,0f,
             1f,1f,
@@ -108,6 +109,7 @@ public class TexCube {
     TexCube() {
         makeTexCube(1f);
     }
+
     public void makeTexCube(float r){ //r rudius of circumsphere
         int i;
         float m,mm;
@@ -120,7 +122,7 @@ public class TexCube {
         vertexBuffer=BufferUtil.makeFloatBuffer(vertexs);
         indexBuffer=BufferUtil.makeByteBuffer(indexs);
         normalBuffer=BufferUtil.makeFloatBuffer(normals);
-        texcoordBuffer = BufferUtil.makeFloatBuffer(textcoords);
+        texcoordBuffer = BufferUtil.makeFloatBuffer(texcoords);
     }
 
     public void draw(float r,float g,float b,float a, float shininess) {
