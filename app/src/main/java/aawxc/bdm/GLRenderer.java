@@ -35,8 +35,12 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private  float[] cMatrix=new float[16]; //カメラビュー変換マトリックス
 
     private Axis MyAxes= new Axis();  //原点周囲の軸表示とためのオブジェクトを作成
-    private TexCube MyTexCube = new TexCube(); //原点に，外接球半径１の立方体オブジェクトを作成
-    private Texture WoodenBox;
+    private RectangularWithTex surface1;
+    private RectangularWithTex surface2;
+    private RectangularWithTex surface3;
+    private RectangularWithTex surface4;
+    private RectangularWithTex surface5;
+    private RectangularWithTex surface6;
 
     //シェーダのattribute属性の変数に値を設定していないと暴走するのでそのための準備
     private static float[] DummyFloat= new float[1];
@@ -79,13 +83,18 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         //GLES20.glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
 
         //テクスチャの有効化
-        GLES20.glEnable(GLES20.GL_TEXTURE_2D);
+        //GLES20.glEnable(GLES20.GL_TEXTURE_2D);
 
         // 背景とのブレンド方法を設定します。
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);    // 単純なアルファブレンド
 
-        WoodenBox = new Texture(mContext,R.drawable.woodenbox); //テクスチャを作成
+        surface1 = new RectangularWithTex(mContext, R.drawable.woodenbox1);
+        surface2 = new RectangularWithTex(mContext, R.drawable.woodenbox2);
+        surface3 = new RectangularWithTex(mContext, R.drawable.woodenbox3);
+        surface4 = new RectangularWithTex(mContext, R.drawable.woodenbox4);
+        surface5 = new RectangularWithTex(mContext, R.drawable.woodenbox5);
+        surface6 = new RectangularWithTex(mContext, R.drawable.woodenbox6);
     }
 
     //画面サイズ変更時に呼ばれる
@@ -136,24 +145,21 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         //cMatrixをセットしてから光源位置をセット
         GLES.setLightPosition(LightPos);
 
-        //座標軸の描画
         GLES.disableShading(); //シェーディング機能は使わない
         Matrix.setIdentityM(mMatrix, 0);//モデル変換行列mMatrixを単位行列にする。
         Matrix.scaleM(mMatrix, 0, scale_x, scale_y, scale_z);
         Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[0]), 0, 1, 0);
         Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[1]), 1, 0, 0);
         GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
+
         //座標軸の描画本体
-        //引数 r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる), linewidth
-        //shininessは使用していない
+        //引数 r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる)
         MyAxes.draw(1f, 1f, 1f, 1f, 10.f, 2f);//座標軸の描画本体
-        GLES.enableShading(); //シェーディング機能を使う設定に戻す
+        //GLES.enableShading(); //シェーディング機能を使う設定に戻す
 
         GLES.enableTexture();
 
-        WoodenBox.setTexture();
-        // r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる)
-        MyTexCube.draw(0f, 1f, 0f, 1f, 20.f);
+        surface1.draw(1f, 1f, 1f, 1f, 5f);
 
         GLES.disableTexture();
     }
