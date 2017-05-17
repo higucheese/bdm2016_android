@@ -19,9 +19,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private float aspect;//アスペクト比
     private static final float viewlength = 5.0f; //視点距離
     private static final float scale_x = 2.0f;
-    private static final float scale_y = 1.0f;
-    private static final float scale_z = 1.0f;
-    private static final float PROPOTION_VALUE = 0.5f;
+    private static final float scale_y = 1.5f;
+    private static final float scale_z = 3.0f;
+    private static final float PROPOTION_VALUE = 1f;
 
     //視点変更テスト変数
     private static float[] rotValue = {0.0f, 0.0f, 0.0f};
@@ -146,28 +146,93 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         GLES.setLightPosition(LightPos);
 
         GLES.disableShading(); //シェーディング機能は使わない
+
         Matrix.setIdentityM(mMatrix, 0);//モデル変換行列mMatrixを単位行列にする。
-        Matrix.scaleM(mMatrix, 0, scale_x, scale_y, scale_z);
+        //Matrix.scaleM(mMatrix, 0, scale_x, scale_y, scale_z);
         Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[0]), 0, 1, 0);
         Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[1]), 1, 0, 0);
         GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
-
-        //座標軸の描画本体
-        //引数 r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる)
         MyAxes.draw(1f, 1f, 1f, 1f, 10.f, 2f);//座標軸の描画本体
+
         //GLES.enableShading(); //シェーディング機能を使う設定に戻す
 
         GLES.enableTexture();
 
+        Matrix.setIdentityM(mMatrix, 0);//モデル変換行列mMatrixを単位行列にする。
+        Matrix.scaleM(mMatrix, 0, scale_x, scale_y, scale_z);
+        Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[0]), 0, 1, 0);
+        Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[1]), 1, 0, 0);
+        Matrix.translateM(mMatrix, 0, 0f, 0f, 0.5f);
+        Matrix.rotateM(mMatrix, 0, 180f, 0, 1, 0);
+        GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
         surface1.draw(1f, 1f, 1f, 1f, 5f);
+
+        Matrix.setIdentityM(mMatrix, 0);//モデル変換行列mMatrixを単位行列にする。
+        Matrix.scaleM(mMatrix, 0, scale_x, scale_y, scale_z);
+        Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[0]), 0, 1, 0);
+        Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[1]), 1, 0, 0);
+        Matrix.translateM(mMatrix, 0, 0f, 0f, -0.5f);
+        GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
+        surface3.draw(1f, 1f, 1f, 1f, 5f);
+
+        Matrix.setIdentityM(mMatrix, 0);//モデル変換行列mMatrixを単位行列にする。
+        Matrix.scaleM(mMatrix, 0, scale_x, scale_y, scale_z);
+        Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[0]), 0, 1, 0);
+        Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[1]), 1, 0, 0);
+        Matrix.translateM(mMatrix, 0, 0.5f, 0f, 0f);
+        Matrix.rotateM(mMatrix, 0, -90f, 0, 1, 0);
+        GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
+        surface2.draw(1f, 1f, 1f, 1f, 5f);
+
+        Matrix.setIdentityM(mMatrix, 0);//モデル変換行列mMatrixを単位行列にする。
+        Matrix.scaleM(mMatrix, 0, scale_x, scale_y, scale_z);
+        Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[0]), 0, 1, 0);
+        Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[1]), 1, 0, 0);
+        Matrix.translateM(mMatrix, 0, -0.5f, 0f, 0f);
+        Matrix.rotateM(mMatrix, 0, 90f, 0, 1, 0);
+        GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
+        surface4.draw(1f, 1f, 1f, 1f, 5f);
+
+        Matrix.setIdentityM(mMatrix, 0);//モデル変換行列mMatrixを単位行列にする。
+        Matrix.scaleM(mMatrix, 0, scale_x, scale_y, scale_z);
+        Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[0]), 0, 1, 0);
+        Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[1]), 1, 0, 0);
+        Matrix.translateM(mMatrix, 0, 0f, 0.5f, 0f);
+        Matrix.rotateM(mMatrix, 0, 90f, 1, 0, 0);
+        GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
+        surface5.draw(1f, 1f, 1f, 1f, 5f);
+
+        Matrix.setIdentityM(mMatrix, 0);//モデル変換行列mMatrixを単位行列にする。
+        Matrix.scaleM(mMatrix, 0, scale_x, scale_y, scale_z);
+        Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[0]), 0, 1, 0);
+        Matrix.rotateM(mMatrix, 0, (float)Math.toDegrees(rotValue[1]), 1, 0, 0);
+        Matrix.translateM(mMatrix, 0, 0f, -0.5f, 0f);
+        Matrix.rotateM(mMatrix, 0, -90f, 1, 0, 0);
+        GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
+        surface6.draw(1f, 1f, 1f, 1f, 5f);
+
 
         GLES.disableTexture();
     }
 
     public static void setRotationValue(float yaw, float pitch, float roll){
+        /*
         rotValue[0] = yaw * PROPOTION_VALUE;
         rotValue[1] = pitch * PROPOTION_VALUE;
         rotValue[2] = roll * PROPOTION_VALUE;
+        */
+    }
+
+    private float Scroll[] = {0f, 0f}; //１本指のドラッグ[rad]
+    public void setScrollValue(float DeltaX, float DeltaY) {
+        Scroll[0] += DeltaX * 0.01;
+        if (3.14f<Scroll[0]) Scroll[0]=3.14f;
+        if (Scroll[0]<-3.14) Scroll[0]=-3.14f;
+        Scroll[1] -= DeltaY * 0.01;
+        if (1.57f<Scroll[1]) Scroll[1]=1.57f;
+        if (Scroll[1]<-1.57) Scroll[1]=-1.57f;
+        rotValue[1]=-Scroll[1];
+        rotValue[0]=Scroll[0];
     }
 
 }
