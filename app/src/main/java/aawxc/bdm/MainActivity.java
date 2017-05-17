@@ -1,18 +1,19 @@
 package aawxc.bdm;
 
-import android.app.Activity;
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorEvent;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.TextView;
+    import android.app.Activity;
+    import android.content.Context;
+    import android.content.Intent;
+    import android.hardware.Sensor;
+    import android.hardware.SensorManager;
+    import android.hardware.SensorEventListener;
+    import android.hardware.SensorEvent;
+    import android.os.Build;
+    import android.os.Bundle;
+    import android.view.GestureDetector;
+    import android.view.MotionEvent;
+    import android.view.View;
+    import android.widget.FrameLayout;
+    import android.widget.TextView;
 
 public class MainActivity extends Activity implements SensorEventListener{
 
@@ -33,20 +34,15 @@ public class MainActivity extends Activity implements SensorEventListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getApplicationContext();
-
         //don't show navigation bar
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
             View decorView = this.getWindow().getDecorView();
             decorView.setSystemUiVisibility( View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
-
         setContentView(R.layout.activity_main);
-
         // Get an instance of the SensorManager
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
         stateView = (TextView) findViewById(R.id.state_view);
-
     }
 
     @Override
@@ -111,5 +107,14 @@ public class MainActivity extends Activity implements SensorEventListener{
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy){
 
+    }
+
+    public void onClick(View view){
+        switch(view.getId()){
+            case R.id.m2s_button:
+                Intent intent = new Intent(this, SubActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 }
