@@ -92,12 +92,12 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);    // 単純なアルファブレンド
 
-        surface1 = new RectangularWithTex(mContext, R.drawable.woodenbox1);
-        surface2 = new RectangularWithTex(mContext, R.drawable.woodenbox2);
-        surface3 = new RectangularWithTex(mContext, R.drawable.woodenbox3);
-        surface4 = new RectangularWithTex(mContext, R.drawable.woodenbox4);
-        surface5 = new RectangularWithTex(mContext, R.drawable.woodenbox5);
-        surface6 = new RectangularWithTex(mContext, R.drawable.woodenbox6);
+        surface1 = new RectangularWithTex(mContext, "http://35.164.188.223/img/back.png");
+        surface2 = new RectangularWithTex(mContext, "http://35.164.188.223/img/right.png");
+        surface3 = new RectangularWithTex(mContext, "http://35.164.188.223/img/front.png");
+        surface4 = new RectangularWithTex(mContext, "http://35.164.188.223/img/left.png");
+        surface5 = new RectangularWithTex(mContext, "http://35.164.188.223/img/top.png");
+        surface6 = new RectangularWithTex(mContext, "http://35.164.188.223/img/bottom.png");
 
     }
 
