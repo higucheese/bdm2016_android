@@ -4,6 +4,7 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import java.nio.FloatBuffer;
 
@@ -12,6 +13,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 
 public class GLRenderer implements GLSurfaceView.Renderer {
+    private final static String TAG = "GLRenderer";
     //システム
     private final Context mContext;
     private boolean validProgram=false; //シェーダプログラムが有効
@@ -53,6 +55,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     //サーフェイス生成時に呼ばれる
     @Override
     public void onSurfaceCreated(GL10 gl10,EGLConfig eglConfig) {
+        Log.e(TAG, "onSurfaceCreated");
         //プログラムの生成
         validProgram = GLES.makeProgram();
 
@@ -95,6 +98,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         surface4 = new RectangularWithTex(mContext, R.drawable.woodenbox4);
         surface5 = new RectangularWithTex(mContext, R.drawable.woodenbox5);
         surface6 = new RectangularWithTex(mContext, R.drawable.woodenbox6);
+
     }
 
     //画面サイズ変更時に呼ばれる
