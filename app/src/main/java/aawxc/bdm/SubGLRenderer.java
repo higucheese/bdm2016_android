@@ -24,7 +24,7 @@ public class SubGLRenderer implements GLSurfaceView.Renderer {
 
     private float aspect;//アスペクト比
     private static final float viewlength = 5f; //視点距離
-    private static final float scale_x = 2.0f;
+    private static final float scale_x = 3.0f;
     private static final float scale_y = 1.5f;
     private static final float scale_z = 3.0f;
     private static final float PROPOTION_VALUE = 1f;
@@ -96,10 +96,10 @@ public class SubGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);    // 単純なアルファブレンド
 
-        surface1 = new RectangularWithTex(mContext, "http://35.164.188.223/img/back.png");
-        surface2 = new RectangularWithTex(mContext, "http://35.164.188.223/img/right.png");
-        surface3 = new RectangularWithTex(mContext, "http://35.164.188.223/img/front.png");
-        surface4 = new RectangularWithTex(mContext, "http://35.164.188.223/img/left.png");
+        surface1 = new RectangularWithTex(mContext, "http://35.164.188.223/img/right.png");
+        surface2 = new RectangularWithTex(mContext, "http://35.164.188.223/img/front.png");
+        surface3 = new RectangularWithTex(mContext, "http://35.164.188.223/img/left.png");
+        surface4 = new RectangularWithTex(mContext, "http://35.164.188.223/img/back.png");
         surface5 = new RectangularWithTex(mContext, "http://35.164.188.223/img/top.png");
         surface6 = new RectangularWithTex(mContext, "http://35.164.188.223/img/bottom.png");
     }
@@ -154,11 +154,12 @@ public class SubGLRenderer implements GLSurfaceView.Renderer {
 
         GLES.disableShading(); //シェーディング機能は使わない
 
+        /*
         Matrix.setIdentityM(mMatrix, 0);//モデル変換行列mMatrixを単位行列にする。
         Matrix.scaleM(mMatrix, 0, scale_x, scale_y, scale_z);
         GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
         MyAxes.draw(1f, 1f, 1f, 1f, 10.f, 2f);//座標軸の描画本体
-
+        */
         //GLES.enableShading(); //シェーディング機能を使う設定に戻す
 
         GLES.enableTexture();
@@ -194,6 +195,7 @@ public class SubGLRenderer implements GLSurfaceView.Renderer {
         Matrix.scaleM(mMatrix, 0, scale_x, scale_y, scale_z);
         Matrix.translateM(mMatrix, 0, 0f, 0.5f, 0f);
         Matrix.rotateM(mMatrix, 0, 90f, 1, 0, 0);
+        Matrix.rotateM(mMatrix, 0, 90f, 0, 0, 1);
         GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
         surface5.draw(1f, 1f, 1f, 1f, 5f);
 
@@ -201,6 +203,7 @@ public class SubGLRenderer implements GLSurfaceView.Renderer {
         Matrix.scaleM(mMatrix, 0, scale_x, scale_y, scale_z);
         Matrix.translateM(mMatrix, 0, 0f, -0.5f, 0f);
         Matrix.rotateM(mMatrix, 0, -90f, 1, 0, 0);
+        Matrix.rotateM(mMatrix, 0, -90f, 0, 0, 1);
         GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
         surface6.draw(1f, 1f, 1f, 1f, 5f);
 
